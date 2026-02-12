@@ -16,7 +16,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: envs/${{ matrix.environment }}
+        working-directory: envis/${{ matrix.environment }}
 
     steps:
       - name: Checkout Repository
