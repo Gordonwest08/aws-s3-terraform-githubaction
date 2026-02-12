@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        environment: [staging, production]
+        environment: [dev, prod]
 
     defaults:
       run:
