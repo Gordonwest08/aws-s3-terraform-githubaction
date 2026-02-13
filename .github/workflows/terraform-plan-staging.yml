@@ -1,4 +1,4 @@
-name: Terraform Plan (Planning for Staging)
+name: Terraform Plan (Planning for staging)
 
 on:
   pull_request:
