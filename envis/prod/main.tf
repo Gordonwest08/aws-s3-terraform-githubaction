@@ -22,7 +22,7 @@ provider "aws" {
 module "s3_bucket" {
   source = "../../modules/s3-bucket"
 
-  bucket_name         = "my-company-prod-assets36880850"
+  bucket_name         = "my-company-prod-assets3-910541869155"
   enable_versioning   = true
   enable_encription   = true
   allow_public_access = false
