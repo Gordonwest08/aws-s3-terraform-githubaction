@@ -11,6 +11,10 @@ terraform {
 resource "aws_s3_bucket" "gordonwest_bucket" {
   bucket = var.bucket_name
   tags = var.tags
+
+  lifecycle {
+    ignore_changes = [acl]
+  }
   
 }
  
