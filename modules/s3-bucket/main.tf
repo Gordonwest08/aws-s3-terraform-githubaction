@@ -8,7 +8,7 @@ terraform {
 }
 
 
-resource "aws_s3_bucket" "gordonwest_bucket" {
+resource "aws_s3_bucket" "gordonwest_bucket_910541869155" {
   bucket = var.bucket_name
   tags = var.tags
 
