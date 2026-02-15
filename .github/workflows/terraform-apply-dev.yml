@@ -5,6 +5,10 @@ on:
     branches:
       - develop
 
+concurrency:
+  group: terraform-dev
+  cancel-in-progress: true
+
 permissions:
   id-token: write
   contents: read
@@ -37,5 +41,9 @@ jobs:
       - name: Terraform Init
         run: terraform init -reconfigure
 
+      - name: Terraform Plan
+        run: terraform plan -input=false
+
       - name: Terraform Apply
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
         run: terraform apply -auto-approve
