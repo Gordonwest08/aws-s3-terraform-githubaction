@@ -1,0 +1,50 @@
+name: Terraform Apply (dev)
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+concurrency:
+  group: terraform-dev
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: dev
+      url: https://console.aws.amazon.com/s3
+
+    defaults:
+      run:
+        working-directory: envis/dev
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::910541869155:role/GitHubActions-aws-s3-terraform-role
+          aws-region: us-east-1
+
+      - name: Remove Stuck Terraform Lock (if exists)
+        run: |
+          LOCK_ID=$(aws dynamodb scan \
+            --table-name terraform-locks \
+            --filter-expression "Path = :path" \
+            --expression-attribute-values '{":path":{"S":"gordonwest-terraform-state/s3-project/dev/terraform.tfstate"}}' \
+            --query "Items[0].LockID.S" \
+            --output text)
+          if [ "$LOCK_ID" != "None" ]; then
+            echo "Found stuck lock: $LOCK_ID. Removing..."
