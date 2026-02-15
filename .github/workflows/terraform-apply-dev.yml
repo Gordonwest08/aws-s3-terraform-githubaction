@@ -5,13 +5,13 @@ on:
     branches:
       - develop
 
-concurrency:
-  group: terraform-dev
-  cancel-in-progress: true
-
 permissions:
   id-token: write
   contents: read
+
+concurrency:
+  group: terraform-dev
+  cancel-in-progress: true
 
 jobs:
   apply:
@@ -38,13 +38,26 @@ jobs:
           role-to-assume: arn:aws:iam::910541869155:role/GitHubActions-aws-s3-terraform-role
           aws-region: us-east-1
 
-      - name: Remove Stuck Terraform Lock (if exists)
+      - name: Remove Stale Terraform Lock
         run: |
           LOCK_ID=$(aws dynamodb scan \
             --table-name terraform-locks \
-            --filter-expression "Path = :path" \
+            --filter-expression "#P = :path" \
+            --expression-attribute-names '{"#P":"Path"}' \
             --expression-attribute-values '{":path":{"S":"gordonwest-terraform-state/s3-project/dev/terraform.tfstate"}}' \
             --query "Items[0].LockID.S" \
             --output text)
           if [ "$LOCK_ID" != "None" ]; then
-            echo "Found stuck lock: $LOCK_ID. Removing..."
+            terraform force-unlock -force $LOCK_ID
+          else
+            echo "No active Terraform lock found."
+          fi
+
+      - name: Terraform Init
+        run: terraform init -reconfigure
+
+      - name: Terraform Plan
+        run: terraform plan -input=false
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
