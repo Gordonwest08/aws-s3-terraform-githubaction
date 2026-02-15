@@ -27,9 +27,9 @@ jobs:
           aws-region: us-east-1
 
       - name: Terraform Init
-        working-directory: envs/prod
+        working-directory: envis/prod
         run: terraform init -reconfigure
 
       - name: Terraform Plan (Drift Detection)
-        working-directory: envs/prod
+        working-directory: envis/prod
         run: terraform plan -detailed-exitcode
