@@ -25,9 +25,9 @@ jobs:
           aws-region: us-east-1
 
       - name: Terraform Init
-        working-directory: envs/dev
+        working-directory: envis/dev
         run: terraform init -reconfigure
 
       - name: Terraform Destroy
-        working-directory: envs/dev
+        working-directory: envis/dev
         run: terraform destroy -auto-approve
