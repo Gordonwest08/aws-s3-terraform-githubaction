@@ -64,6 +64,95 @@ Explicit S3 permissions: Generic bucket actions are insufficient; metadata permi
 
 Drift detection improves reliability: Catch out-of-band changes before they cause errors.
 
+Infrastructure Teardown (Destroy Workflows)
+
+This project includes explicit and controlled Terraform destroy workflows for both Development and Production environments. These workflows enable safe, auditable, and intentional teardown of cloud resources when they are no longer required.
+
+🔹 Why Destroy Workflows Matter
+
+Seasoned cloud engineers treat resource destruction as a first-class operation, not an afterthought. These workflows ensure:
+
+Cost control – prevent orphaned AWS resources
+
+Operational hygiene – clean teardown after testing or project completion
+
+Environment safety – Dev and Prod are destroyed independently
+
+Auditability – all destructive actions are tracked in GitHub Actions logs
+
+No accidental deletes – destruction is never automatic
+
+🔹 Dev Destroy Workflow
+
+Purpose: Tear down all Terraform-managed resources in the development environment
+
+Trigger: Manual (workflow_dispatch)
+
+State: Uses the Dev Terraform remote state
+
+Protection:
+
+Isolated IAM permissions
+
+Environment-specific backend
+
+Separate workflow from production
+
+Use case examples:
+
+Cleaning up test infrastructure
+
+Resetting Dev after experiments
+
+Cost optimization during idle periods
+
+🔹 Prod Destroy Workflow
+
+Purpose: Tear down all Terraform-managed resources in the production environment
+
+Trigger: Manual (workflow_dispatch) only
+
+State: Uses the Production Terraform remote state
+
+Protection:
+
+Explicit environment targeting
+
+Strict IAM role permissions
+
+No automatic triggers (no PRs, no pushes)
+
+Important:
+Production destruction is intentionally manual to prevent accidental outages and ensure operational accountability.
+
+🔹 Key Safety Controls Implemented
+
+Separate Terraform backends for Dev and Prod
+
+Independent GitHub Actions workflows
+
+IAM least-privilege enforcement
+
+DynamoDB state locking to prevent concurrent operations
+
+Concurrency controls to avoid overlapping runs
+
+Manual approval model for destructive actions
+
+🔹 Verified Outcome
+
+Both Dev and Prod destroy workflows were successfully executed, and all deployed AWS resources were cleanly removed without state corruption or cross-environment impact.
+
+This confirms:
+
+Correct environment isolation
+
+Proper IAM permissions
+
+Reliable Terraform state management
+
+Safe CI/CD automation for destructive operations
+
 🏷️ Tags
 
 Terraform | AWS S3 | GitHub Actions | CI/CD | DevOps | Infrastructure as Code
