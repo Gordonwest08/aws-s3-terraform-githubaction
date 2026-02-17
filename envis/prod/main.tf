@@ -7,7 +7,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "my-company-terraform-state-123456"
+    bucket         = "gordonwest-terraform-state"
     key            = "s3-project/production/terraform.tfstate"
     region         = "us-east-1"
     dynamodb_table = "terraform-locks"
@@ -22,7 +22,7 @@ provider "aws" {
 module "s3_bucket" {
   source = "../../modules/s3-bucket"
 
-  bucket_name         = "my-company-prod-assets"
+  bucket_name         = "my-company-prod-assets3-910541869155"
   enable_versioning   = true
   enable_encription   = true
   allow_public_access = false
